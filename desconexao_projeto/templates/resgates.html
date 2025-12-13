@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Meus Resgates</h2>
+
+{% if resgates %}
+    <ul class="lista-resgates">
+        {% for r in resgates %}
+        <li class="resgate-item">
+            <img src="{{ r.produto.imagem.url }}" alt="{{ r.produto.nome }}" class="img-produto">
+
+            <div class="info">
+                <h3>{{ r.produto.nome }}</h3>
+                <p>Pontos usados: <strong>{{ r.pontos_utilizados }}</strong></p>
+                <p>Data: {{ r.data_resgate|date:"d/m/Y H:i" }}</p>
+            </div>
+
+            {% if r.entregue %}
+                <span class="status entregue">ENTREGUE</span>
+            {% else %}
+                <span class="status pendente">PENDENTE</span>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Você ainda não resgatou nenhum prêmio.</p>
+{% endif %}
+
+{% endblock %}

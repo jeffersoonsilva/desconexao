@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Cadastro - Desconexão{% endblock %}
+
+{% block content %}
+<body class="bg-light d-flex align-items-center justify-content-center" style="min-height: 100vh;">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-5">
+        <div class="card shadow-lg border-0 p-4">
+          <div class="text-center mb-4">
+            <a class="navbar-brand d-flex flex-column align-items-center" href="{% url 'index' %}">
+              <img src="{% static 'imagens/logo-desconexao.png' %}" class="mb-2" style="height: 45px; width: auto;">
+              <strong class="fs-4">Desconexão</strong>
+            </a>
+            <h4 class="fw-bold mt-3">Criar Conta</h4>
+            <p class="text-muted mb-0">Preencha os dados abaixo</p>
+          </div>
+
+          <form method="POST">
+            {% csrf_token %}
+            
+            <div class="mb-3">
+              <label class="form-label">Nome</label>
+              <input type="text" name="first_name" class="form-control" placeholder="Seu nome completo" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Nome de Usuário</label>
+              <input type="text" name="username" class="form-control" placeholder="Escolha um username" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input type="email" name="email" class="form-control" placeholder="seuemail@email.com" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Senha</label>
+              <input type="password" name="senha" class="form-control" placeholder="Crie uma senha" required>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label">Confirmar Senha</label>
+              <input type="password" name="confirmar_senha" class="form-control" placeholder="Repita a senha" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 py-2">Cadastrar</button>
+          </form>
+
+          <p class="text-center mt-3 mb-0">
+            Já tem conta? <a href="{% url 'login' %}" class="fw-semibold">Faça login</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+{% endblock %}

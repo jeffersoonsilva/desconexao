@@ -1,0 +1,24 @@
+{% for p in produtos %}
+<div class="card-produto">
+
+    <h3 class="produto-nome">{{ p.nome }}</h3>
+
+    <p class="produto-pontos">
+        ⭐ Pontos necessários: <strong>{{ p.pontos_necessarios }}</strong>
+    </p>
+
+    <p class="produto-quantidade">
+        📦 Disponível: {{ p.quantidade_disponivel }}
+    </p>
+
+    <form action="{% url 'resgatar_produto' p.id %}" method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">
+            Resgatar
+        </button>
+    </form>
+
+</div>
+{% empty %}
+<p>Nenhum prêmio disponível no momento.</p>
+{% endfor %}

@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - Desconexão{% endblock %}
+
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center" href="{% url 'index' %}">
+      <img src="{% static 'imagens/logo-desconexao.png' %}" alt="Logo" style="height: 40px;">
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'atividades' %}">Atividades</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'loja' %}">Loja</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'meus_resgates' %}">Meus Resgates</a></li>
+      </ul>
+      <span class="navbar-text ms-3">
+        Olá, {{ user.first_name }}!
+      </span>
+      <a class="btn btn-outline-danger ms-2" href="{% url 'logout' %}">Sair</a>
+    </div>
+  </div>
+</nav>
+
+<div class="container my-5">
+  <div class="row">
+    <!-- Card de Pontos -->
+    <div class="col-md-4 mb-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body text-center">
+          <h5 class="card-title text-muted">Meus Pontos</h5>
+          <h2 class="display-4 text-primary">{{ pontos }}</h2>
+          <p class="text-muted mb-0">pontos acumulados</p>
+          <a href="{% url 'loja' %}" class="btn btn-primary mt-3">Resgatar Prêmios</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card de Inscrições -->
+    <div class="col-md-4 mb-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body text-center">
+          <h5 class="card-title text-muted">Minhas Inscrições</h5>
+          <h2 class="display-4 text-success">{{ inscricoes|length }}</h2>
+          <p class="text-muted mb-0">atividades inscritas</p>
+          <a href="{% url 'atividades' %}" class="btn btn-success mt-3">Ver Atividades</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card de Atividades Disponíveis -->
+    <div class="col-md-4 mb-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body text-center">
+          <h5 class="card-title text-muted">Disponíveis</h5>
+          <h2 class="display-4 text-info">{{ atividades|length }}</h2>
+          <p class="text-muted mb-0">novas atividades</p>
+          <a href="{% url 'atividades' %}" class="btn btn-info mt-3">Inscrever-se</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Minhas Inscrições -->
+  <div class="row mt-4">
+    <div class="col-12">
+      <h3 class="mb-3">Minhas Inscrições</h3>
+      
+      {% if inscricoes %}
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead class="table-light">
+              <tr>
+                <th>Atividade</th>
+                <th>Data/Hora</th>
+                <th>Local</th>
+                <th>Status</th>
+                <th>Pontos</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for inscricao in inscricoes %}
+              <tr>
+                <td>
+                  <strong>{{ inscricao.atividade.titulo }}</strong><br>
+                  <small class="text-muted">{{ inscricao.atividade.get_tipo_display }}</small>
+                </td>
+                <td>{{ inscricao.atividade.data_hora|date:"d/m/Y H:i" }}</td>
+                <td>{{ inscricao.atividade.local }}</td>
+                <td>
+                  {% if inscricao.status == 'confirmada' %}
+                    <span class="badge bg-primary">Confirmada</span>
+                  {% elif inscricao.status == 'presente' %}
+                    <span class="badge bg-success">Presente</span>
+                  {% elif inscricao.status == 'ausente' %}
+                    <span class="badge bg-danger">Ausente</span>
+                  {% else %}
+                    <span class="badge bg-secondary">Cancelada</span>
+                  {% endif %}
+                </td>
+                <td>
+                  {% if inscricao.status == 'presente' %}
+                    <strong class="text-success">+{{ inscricao.pontos_ganhos }}</strong>
+                  {% else %}
+                    {{ inscricao.atividade.pontos_participacao }}
+                  {% endif %}
+                </td>
+                <td>
+                  {% if inscricao.status == 'confirmada' %}
+                    <form method="POST" action="{% url 'cancelar_inscricao' inscricao.id %}" style="display: inline;">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-sm btn-outline-danger" 
+                              onclick="return confirm('Deseja realmente cancelar esta inscrição?')">
+                        Cancelar
+                      </button>
+                    </form>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="alert alert-info">
+          <p class="mb-0">Você ainda não está inscrito em nenhuma atividade.</p>
+          <a href="{% url 'atividades' %}" class="alert-link">Ver atividades disponíveis</a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Novas Atividades Disponíveis -->
+  <div class="row mt-5">
+    <div class="col-12">
+      <h3 class="mb-3">Atividades Disponíveis</h3>
+      
+      {% if atividades %}
+        <div class="row">
+          {% for atividade in atividades|slice:":6" %}
+          <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+              {% if atividade.imagem %}
+                <img src="{{ atividade.imagem.url }}" class="card-img-top" alt="{{ atividade.titulo }}" style="height: 200px; object-fit: cover;">
+              {% else %}
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                  <span class="text-muted">Sem imagem</span>
+                </div>
+              {% endif %}
+              <div class="card-body">
+                <span class="badge bg-info mb-2">{{ atividade.get_tipo_display }}</span>
+                <h5 class="card-title">{{ atividade.titulo }}</h5>
+                <p class="card-text text-muted">{{ atividade.descricao|truncatewords:15 }}</p>
+                <ul class="list-unstyled">
+                  <li><small><strong>📅 Data:</strong> {{ atividade.data_hora|date:"d/m/Y H:i" }}</small></li>
+                  <li><small><strong>📍 Local:</strong> {{ atividade.local|truncatewords:5 }}</small></li>
+                  <li><small><strong>👥 Vagas:</strong> {{ atividade.vagas_disponiveis }} disponíveis</small></li>
+                  <li><small><strong>⭐ Pontos:</strong> {{ atividade.pontos_participacao }}</small></li>
+                </ul>
+              </div>
+              <div class="card-footer bg-white border-0">
+                <form method="POST" action="{% url 'inscrever_atividade' atividade.id %}">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-primary w-100">Inscrever-se</button>
+                </form>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        
+        <div class="text-center mt-3">
+          <a href="{% url 'atividades' %}" class="btn btn-outline-primary">Ver Todas as Atividades</a>
+        </div>
+      {% else %}
+        <div class="alert alert-warning">
+          Nenhuma atividade disponível no momento.
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<footer class="bg-light mt-5 py-4">
+  <div class="container">
+    <div class="text-center text-muted">
+      <small>© Projeto Desconexão - Todos os direitos reservados</small>
+    </div>
+  </div>
+</footer>
+{% endblock %}

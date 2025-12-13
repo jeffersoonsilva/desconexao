@@ -1,0 +1,50 @@
+ body{font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
+
+body {
+  background: linear-gradient(
+    135deg,
+    rgba(86, 224, 112, 0.733),
+    rgba(170, 231, 190, 0.384)
+  );
+}
+
+.hero{
+    margin-top: 50px;
+}
+
+.card-img-top {
+  height: 160px;        /* Altura fixa */
+  width: 100%;          /* Preenche toda a largura */
+  object-fit: cover;    /* Mantém proporção e corta o excesso */
+  border-radius: 12px;  /* opcional - deixa redondinho */
+}
+
+.card-feature{
+    border:0;box-shadow:0 6px 18px rgba(15,23,42,0.06);
+}
+    
+.navbar-brand img {
+  height: 70px;   /* Ajuste aqui o tamanho ideal */
+  width: auto;    /* Mantém a proporção */
+}
+
+footer{
+    padding:2rem 0; 
+    background:#f8f9fa
+}
+pre.code-sample{
+    background:#0b1220;
+    color:#dbeafe;
+    padding:1rem;
+    border-radius:.5rem;
+    overflow:auto
+}
+.ghost-link{
+    color:var(--accent); 
+    text-decoration:none
+}
+
+.btn {
+  padding: 5px 20px;  
+  font-size: 14px;     
+}

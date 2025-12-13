@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2 class="mb-4">Atividades Disponíveis</h2>
+
+    {% if atividades %}
+        <div class="row">
+            {% for atividade in atividades %}
+            <div class="col-md-4">
+                <div class="card mb-3 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ atividade.titulo }}</h5>
+                        <p class="card-text">{{ atividade.descricao|truncatechars:120 }}</p>
+
+                        <p class="mb-1"><strong>Pontos:</strong> {{ atividade.pontos }}</p>
+                        <p class="mb-1"><strong>Vagas:</strong> {{ atividade.vagas_disponiveis }}</p>
+
+                        <form method="POST" action="{% url 'inscrever_atividade' atividade.id %}">
+                            {% csrf_token %}
+                            <button class="btn btn-primary w-100">Inscrever-se</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    {% else %}
+        <div class="alert alert-info">Nenhuma atividade disponível no momento.</div>
+    {% endif %}
+
+</div>
+
+{% endblock %}
